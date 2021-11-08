@@ -34,7 +34,12 @@ class _SongPageState extends State<SongPage> {
     });
   }
 
-  void toggleFavorite(id) async {}
+  void toggleFavorite(id) async {
+    var data = await songService.toggleFavorite(id);
+    setState(() {
+      _isFavorite = data;
+    });
+  }
 
   Future<void> isFavorite(id) async {
     var data = await songService.isFarovite(id);
@@ -45,6 +50,7 @@ class _SongPageState extends State<SongPage> {
 
   @override
   void initState() {
+    isFavorite(songId);
     getSong(songId);
     super.initState();
   }

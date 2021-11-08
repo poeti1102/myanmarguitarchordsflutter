@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myanmarguitarchords/models/songModel.dart';
 import 'package:myanmarguitarchords/pages/songs/detail.dart';
 import 'package:myanmarguitarchords/services/songServices.dart';
-import 'package:myanmarguitarchords/widgets/searchWidget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myanmarguitarchords/widgets/sideMenu.dart';
 import 'package:myanmarguitarchords/widgets/songList.dart';
@@ -19,6 +18,8 @@ class _HomePageState extends State<HomePage> {
   num page = 1;
   bool isSearching = false;
   bool isLoading = true;
+  bool isLoadingMore = false;
+  bool canLoadMore = true;
   final SongService songService = SongService();
 
   final spinkit = SpinKitFadingCube(
@@ -36,11 +37,20 @@ class _HomePageState extends State<HomePage> {
 
   void loadMoreSong() async {
     setState(() {
+      isLoadingMore = true;
       page = page + 1;
     });
     var data = await songService.getSongs(page);
+    if(data.isEmpty)
+    {
+      
+      setState(() {
+        canLoadMore = false;
+      });
+    }
     setState(() {
       songs.addAll(data);
+      isLoadingMore = false;
     });
   }
 
@@ -70,7 +80,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: Colors.greenAccent[700],
       ),
-      drawer: SideMenu(),
+      drawer: SideMenu(homePage: true),
       body: Visibility(
         visible: isLoading,
         child: Container(
@@ -107,16 +117,19 @@ class _HomePageState extends State<HomePage> {
                             ))
                         .toList(),
                   ),
-                  if (!isSearching)
-                    OutlinedButton(
-                      child: Text("Load More"),
-                      onPressed: () {
-                        loadMoreSong();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        primary: Colors.black87,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                  if (!isSearching && canLoadMore)
+                    SizedBox(
+                      height: 48,
+                      child: OutlinedButton(
+                        child: isLoadingMore ? CircularProgressIndicator() : Text("Load More..."),
+                        onPressed: () {
+                          loadMoreSong();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          primary: Colors.black87,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
                         ),
                       ),
                     ),

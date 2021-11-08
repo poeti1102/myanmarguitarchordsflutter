@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:myanmarguitarchords/pages/authors/authors.dart';
 import 'package:myanmarguitarchords/pages/home/home.dart';
 
 Future main() async {

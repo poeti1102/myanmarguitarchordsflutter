@@ -17,6 +17,11 @@ class SongService {
     return parsed.map<Song>((song) => Song.fromJson(song)).toList();
   }
 
+  List<Song> parseNormalSongs(String responseBody) {
+    final data = jsonDecode(responseBody);
+      return data.map<Song>((song) => Song.fromJson(song)).toList();
+  }
+
   Future<List<Song>> getSongs(num page) async {
     http.Response response = await http.get(
         Uri.parse('${dotenv.env["APP_URL"]}/songs/list?page=$page'),
@@ -27,6 +32,81 @@ class SongService {
 
     if (response.statusCode == 200) {
       return parseSongs(response.body);
+    } else {
+      throw Exception('Failed to load songs');
+    }
+  }
+
+  Future<List<Song>> getFavoriteSongs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String favoriteSongs = prefs.getString("favoriteList") ?? "";
+    List songs = jsonDecode(favoriteSongs);
+    http.Response response =
+        await http.post(Uri.parse('${dotenv.env["APP_URL"]}/songs/getFavorites'),
+            headers: {
+              "Authorization": 'Bearer $apiKey',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({'searchTerm': songs}));
+
+    if (response.statusCode == 200) {
+      return parseNormalSongs(response.body);
+    } else {
+      throw Exception('Failed to load songs');
+    }
+  }
+
+  Future<List<Song>> getNewSongs() async {
+    http.Response response =
+        await http.get(Uri.parse('${dotenv.env["APP_URL"]}/songs/getNewSongs'),
+            headers: {
+              "Authorization": 'Bearer $apiKey',
+              'Content-Type': 'application/json',
+            });
+    if (response.statusCode == 200) {
+      return parseNormalSongs(response.body);
+    } else {
+      throw Exception('Failed to load songs');
+    }
+  }
+
+  Future<List<Song>> getPopularSongs() async {
+    http.Response response =
+        await http.get(Uri.parse('${dotenv.env["APP_URL"]}/songs/getPopular'),
+            headers: {
+              "Authorization": 'Bearer $apiKey',
+              'Content-Type': 'application/json',
+            });
+    if (response.statusCode == 200) {
+      return parseNormalSongs(response.body);
+    } else {
+      throw Exception('Failed to load songs');
+    }
+  }
+
+  Future<List<Song>> getSongsByAuthor(id) async {
+    http.Response response =
+        await http.get(Uri.parse('${dotenv.env["APP_URL"]}/songs/getSongsByAuthor/$id'),
+            headers: {
+              "Authorization": 'Bearer $apiKey',
+              'Content-Type': 'application/json',
+            });
+    if (response.statusCode == 200) {
+      return parseNormalSongs(response.body);
+    } else {
+      throw Exception('Failed to load songs');
+    }
+  }
+
+  Future<List<Song>> getSongsByAlbum(id) async {
+    http.Response response =
+        await http.get(Uri.parse('${dotenv.env["APP_URL"]}/songs/getSongsByAlbum/$id'),
+            headers: {
+              "Authorization": 'Bearer $apiKey',
+              'Content-Type': 'application/json',
+            });
+    if (response.statusCode == 200) {
+      return parseNormalSongs(response.body);
     } else {
       throw Exception('Failed to load songs');
     }
@@ -69,7 +149,7 @@ class SongService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String favoriteSongs = prefs.getString("favoriteList") ?? "";
     List songs = jsonDecode(favoriteSongs);
-    return songs.contains(id) ? true : false;
+    return songs.contains(id);
   }
 
   Future<bool> toggleFavorite(id) async {
