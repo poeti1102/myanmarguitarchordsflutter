@@ -6,10 +6,11 @@ import 'package:http/http.dart' as http;
 
 import 'package:myanmarguitarchords/models/songModel.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:localstorage/localstorage.dart';
 
 class SongService {
   final apiKey = dotenv.env["API_KEY"];
+  final LocalStorage storage = new LocalStorage('myanmarguitarchords');
 
   List<Song> parseSongs(String responseBody) {
     final data = jsonDecode(responseBody);
@@ -38,17 +39,15 @@ class SongService {
   }
 
   Future<List<Song>> getFavoriteSongs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String favoriteSongs = prefs.getString("favoriteList") ?? "";
-    List songs = jsonDecode(favoriteSongs);
+    String favoriteSongs = storage.getItem("favoriteList") ?? "";
+    List songs = favoriteSongs == "" ? [] : jsonDecode(favoriteSongs);
     http.Response response =
         await http.post(Uri.parse('${dotenv.env["APP_URL"]}/songs/getFavorites'),
             headers: {
               "Authorization": 'Bearer $apiKey',
               'Content-Type': 'application/json',
             },
-            body: jsonEncode({'searchTerm': songs}));
-
+            body: jsonEncode({'ids': songs}));
     if (response.statusCode == 200) {
       return parseNormalSongs(response.body);
     } else {
@@ -146,24 +145,27 @@ class SongService {
   }
 
   Future<bool> isFarovite(id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String favoriteSongs = prefs.getString("favoriteList") ?? "";
-    List songs = jsonDecode(favoriteSongs);
+    String favoriteSongs = storage.getItem("favoriteList") ?? "";
+    List songs = favoriteSongs == "" ? [] : jsonDecode(favoriteSongs);
+    print(favoriteSongs);
     return songs.contains(id);
   }
 
-  Future<bool> toggleFavorite(id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String favoriteSongs = prefs.getString("favoriteList") ?? "";
+  Future<bool> setFavorite(id) async {
+    String favoriteSongs = storage.getItem("favoriteList") ?? "";
+    List songs = favoriteSongs == "" ? [] : jsonDecode(favoriteSongs);
+    songs.add(id);
+    print(id);
+    storage.setItem('favoriteList', jsonEncode(songs));
+    return songs.contains(id);
+  }
+
+  Future<bool> removeFavorite(id) async {
+    String favoriteSongs = storage.getItem("favoriteList") ?? "";
     List songs = jsonDecode(favoriteSongs);
-    if (songs.contains(id)) {
-      songs.remove(id);
-      prefs.setString('favoriteList', jsonEncode(songs));
-      return false;
-    } else {
-      songs.add(id);
-      prefs.setString('favoriteList', jsonEncode(songs));
-      return true;
-    }
+    songs.remove(id);
+    print(id);
+    storage.setItem('favoriteList', jsonEncode(songs));
+    return songs.contains(id);
   }
 }

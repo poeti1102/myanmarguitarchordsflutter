@@ -41,6 +41,9 @@ dependencies:
   pinch_zoom_image_last: ^0.4.1
   flutter_spinkit: ^5.1.0
   shared_preferences: ^2.0.8
+  google_mobile_ads: ^0.13.6
+  provider: ^6.0.1
+  localstorage: ^4.0.0+1
 
 dev_dependencies:
   flutter_test:

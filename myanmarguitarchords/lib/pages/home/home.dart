@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:myanmarguitarchords/models/songModel.dart';
 import 'package:myanmarguitarchords/pages/songs/detail.dart';
+import 'package:myanmarguitarchords/services/adState.dart';
 import 'package:myanmarguitarchords/services/songServices.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myanmarguitarchords/widgets/sideMenu.dart';
 import 'package:myanmarguitarchords/widgets/songList.dart';
+
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,6 +25,25 @@ class _HomePageState extends State<HomePage> {
   bool isLoadingMore = false;
   bool canLoadMore = true;
   final SongService songService = SongService();
+
+  // Ads
+  BannerAd? bannerAd;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final AdState adState = Provider.of<AdState>(context);
+    adState.initialization.then((status) => {
+          setState(() {
+            bannerAd = BannerAd(
+                adUnitId: adState.bannerAdId,
+                size: AdSize.banner,
+                request: AdRequest(),
+                listener: adState.bannerAdListener)
+              ..load();
+          })
+        });
+  }
 
   final spinkit = SpinKitFadingCube(
     color: Colors.black,
@@ -41,9 +64,7 @@ class _HomePageState extends State<HomePage> {
       page = page + 1;
     });
     var data = await songService.getSongs(page);
-    if(data.isEmpty)
-    {
-      
+    if (data.isEmpty) {
       setState(() {
         canLoadMore = false;
       });
@@ -88,54 +109,65 @@ class _HomePageState extends State<HomePage> {
         ),
         replacement: Container(
           margin: EdgeInsets.fromLTRB(12, 8, 12, 8),
-          child: SingleChildScrollView(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(),
-                        hintText: 'သီချင်းရှာမယ်',
-                      ),
-                      onSubmitted: (text) {
-                        searchSongs(text);
-                      },
-                    ),
-                  ),
-                  Column(
-                    children: songs
-                        .map((song) => SongList(
-                              song: song,
-                              goToDetail: () => () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        SongPage(songId: song.id)));
-                              },
-                            ))
-                        .toList(),
-                  ),
-                  if (!isSearching && canLoadMore)
-                    SizedBox(
-                      height: 48,
-                      child: OutlinedButton(
-                        child: isLoadingMore ? CircularProgressIndicator() : Text("Load More..."),
-                        onPressed: () {
-                          loadMoreSong();
+          child: Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(),
+                          hintText: 'သီချင်းရှာမယ်',
+                        ),
+                        onSubmitted: (text) {
+                          searchSongs(text);
                         },
-                        style: OutlinedButton.styleFrom(
-                          primary: Colors.black87,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                    ),
+                    Column(
+                      children: songs
+                          .map((song) => SongList(
+                                song: song,
+                                goToDetail: () => () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          SongPage(songId: song.id)));
+                                },
+                              ))
+                          .toList(),
+                    ),
+                    if (!isSearching && canLoadMore)
+                      SizedBox(
+                        height: 48,
+                        child: OutlinedButton(
+                          child: isLoadingMore
+                              ? CircularProgressIndicator()
+                              : Text("Load More..."),
+                          onPressed: () {
+                            loadMoreSong();
+                          },
+                          style: OutlinedButton.styleFrom(
+                            primary: Colors.black87,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                ]),
+                  ]),
+            ),
           ),
         ),
+      ),
+      bottomNavigationBar: Container(
+        height: 50,
+        child: bannerAd != null ? AdWidget(
+          ad: bannerAd!,
+        ) : SizedBox(height: 50,),
       ),
     );
   }
