@@ -48,9 +48,7 @@ class SongList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      child: Text(
-                        "${song.song_name_mm}",
+                      child: Text("${song.song_name_mm}".length > 35 ? "${song.song_name_mm}".substring(0 ,30) + ".." : "${song.song_name_mm}",
                         style: TextStyle(
                             fontFamily: "Pyidaungsu",
                             fontSize: 16.0,
@@ -60,15 +58,12 @@ class SongList extends StatelessWidget {
                     Divider(
                       height: 10.0,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      child: Text(
-                        song.singer.author_name_mm,
-                        style: TextStyle(
-                            fontFamily: "Pyidaungsu",
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.normal),
-                      ),
+                    Text(
+                      song.singer.author_name_mm,
+                      style: TextStyle(
+                          fontFamily: "Pyidaungsu",
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.normal),
                     ),
                   ],
                 ),

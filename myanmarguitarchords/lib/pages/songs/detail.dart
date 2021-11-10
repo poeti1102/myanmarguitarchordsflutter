@@ -31,7 +31,6 @@ class _SongPageState extends State<SongPage> {
   );
 
   // Ads
-  bool _canShowAds = false;
   BannerAd? bannerAd;
   InterstitialAd? interstitialAd;
 
@@ -53,8 +52,14 @@ class _SongPageState extends State<SongPage> {
                 request: AdRequest(),
                 adLoadCallback: InterstitialAdLoadCallback(
                   onAdLoaded: (InterstitialAd ad) {
-                    _canShowAds = true;
                     this.interstitialAd = ad;
+                    if(adState.songCount >= int.parse(dotenv.env['SONG_LIMIT_INT']!))
+                    {
+                      interstitialAd!.show();
+                      adState.songCount = 1;
+                    } else {
+                      adState.songCount = adState.songCount + 1;
+                    }
                   },
                   onAdFailedToLoad: (LoadAdError error) {
                     print('InterstitialAd failed to load: $error');
@@ -62,18 +67,6 @@ class _SongPageState extends State<SongPage> {
                 ));
           })
         });
-
-    if(adState.songCount >= int.parse(dotenv.env['SONG_LIMIT_INT']!))
-    {
-      if(_canShowAds)
-      {
-        interstitialAd!.show();
-        _canShowAds = false;
-        adState.songCount = 1;
-      }
-    } else {
-      adState.songCount = adState.songCount + 1;
-    }
   }
 
   void getSong(id) async {
