@@ -1,4 +1,4 @@
-package com.example.myanmarguitarchords
+package com.winxstudio.myanmarguitarchords
 
 import io.flutter.embedding.android.FlutterActivity
 

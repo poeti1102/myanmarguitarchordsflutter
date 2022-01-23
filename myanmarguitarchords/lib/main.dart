@@ -4,6 +4,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:myanmarguitarchords/pages/home/home.dart';
 import 'package:myanmarguitarchords/services/adState.dart';
 import 'package:provider/provider.dart';
+import 'package:upgrader/upgrader.dart';
+
 
 Future main() async {
   // To load the .env file contents into dotenv.
@@ -19,7 +21,12 @@ Future main() async {
     builder: (context, child) => MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Myanmar Guitar Chords",
-      home: HomePage(),
+      home: UpgradeAlert(
+        minAppVersion: "1.1.1",
+        showReleaseNotes: false,
+        child: HomePage()
+        ),
     ),
   ));
 }
+

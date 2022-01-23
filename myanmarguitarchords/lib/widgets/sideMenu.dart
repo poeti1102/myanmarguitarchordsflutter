@@ -52,7 +52,7 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = EdgeInsets.symmetric(horizontal: 16);
+    final padding = EdgeInsets.fromLTRB(16,40,16,20);
     final facebookMessengerLink = dotenv.env["MESSENGER_LINK"];
     return Drawer(
       child: Material(

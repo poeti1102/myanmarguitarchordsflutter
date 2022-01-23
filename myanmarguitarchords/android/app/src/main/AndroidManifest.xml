@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myanmarguitarchords">
+    package="com.winxstudio.myanmarguitarchords">
    <application
-
-        android:label="myanmarguitarchords"
+        android:usesCleartextTraffic="true"
+        android:label="Myanmar Guitar Chords"
         android:icon="@mipmap/ic_launcher">
 
        <meta-data
@@ -46,4 +46,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
