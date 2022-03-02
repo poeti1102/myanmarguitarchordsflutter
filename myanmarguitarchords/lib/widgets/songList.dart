@@ -14,13 +14,13 @@ class SongList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+        margin: EdgeInsets.fromLTRB(0, 12, 0, 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           boxShadow: [
             BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 74),
-              offset: Offset(0, 5),
+              offset: Offset(2, 4),
               blurRadius: 0,
               spreadRadius: 0,
             )
@@ -35,34 +35,34 @@ class SongList extends StatelessWidget {
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(4.0),
                   child: Icon(
                     Icons.library_music,
-                    size: 48.0,
+                    size: 36.0,
                   ),
                 ),
                 Divider(
-                  thickness: 10,
+                  thickness: 2,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      child: Text("${song.song_name_mm}".length > 20 ? "${song.song_name_mm}".substring(0 ,20) + ".." : "${song.song_name_mm}",
+                      child: Text("${song.song_name_mm}".length > 30 ? "${song.song_name_mm}".substring(0 ,30) + ".." : "${song.song_name_mm}",
                         style: TextStyle(
                             fontFamily: "Pyidaungsu",
-                            fontSize: 16.0,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
                     Divider(
-                      height: 10.0,
+                      height: 2.0,
                     ),
                     Text(
                       song.singer.author_name_mm,
                       style: TextStyle(
                           fontFamily: "Pyidaungsu",
-                          fontSize: 12.0,
+                          fontSize: 10.0,
                           fontWeight: FontWeight.normal),
                     ),
                   ],

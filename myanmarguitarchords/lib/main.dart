@@ -22,7 +22,7 @@ Future main() async {
       debugShowCheckedModeBanner: false,
       title: "Myanmar Guitar Chords",
       home: UpgradeAlert(
-        minAppVersion: "1.1.1",
+        minAppVersion: "1.1.3",
         showReleaseNotes: false,
         child: HomePage()
         ),

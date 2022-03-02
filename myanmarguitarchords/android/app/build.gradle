@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '4'
+    flutterVersionCode = '5'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.4'
+    flutterVersionName = '1.5'
 }
 
 apply plugin: 'com.android.application'
@@ -77,20 +77,20 @@ if (keystorePropertiesFile.exists()) {
 android {
     defaultConfig {
         multiDexEnabled true
-        signingConfigs {
-            release {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-            }
-        }
+        // signingConfigs {
+        //     release {
+        //         keyAlias keystoreProperties['keyAlias']
+        //         keyPassword keystoreProperties['keyPassword']
+        //         storeFile file(keystoreProperties['storeFile'])
+        //         storePassword keystoreProperties['storePassword']
+        //     }
+        // }
 
-        buildTypes {
-            release {
-                signingConfig signingConfigs.release
-            }
-        }
+        // buildTypes {
+        //     release {
+        //         signingConfig signingConfigs.release
+        //     }
+        // }
     }
 }
 

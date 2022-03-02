@@ -176,6 +176,7 @@ class _HomePageState extends State<HomePage> {
         title: Text("Songs"),
         centerTitle: true,
         backgroundColor: Colors.greenAccent[700],
+        
       ),
       drawer: SideMenu(homePage: true),
       body: Visibility(
@@ -196,8 +197,9 @@ class _HomePageState extends State<HomePage> {
                           prefixIcon: Icon(Icons.search),
                           border: OutlineInputBorder(),
                           hintText: 'သီချင်းရှာမယ်',
+                          contentPadding: const EdgeInsets.fromLTRB(2,8,2,8),
                         ),
-                        onSubmitted: (text) {
+                        onChanged: (text) {
                           searchSongs(text);
                         },
                       ),
