@@ -48,7 +48,7 @@ class SongList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      child: Text("${song.song_name_mm}".length > 30 ? "${song.song_name_mm}".substring(0 ,30) + ".." : "${song.song_name_mm}",
+                      child: Text("${song.song_name_mm}".length > 50 ? "${song.song_name_mm}".substring(0 ,50) + ".." : "${song.song_name_mm}",
                         style: TextStyle(
                             fontFamily: "Pyidaungsu",
                             fontSize: 14.0,

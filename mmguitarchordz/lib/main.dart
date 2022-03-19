@@ -23,6 +23,7 @@ Future main() async {
       title: "Myanmar Guitar Chords",
       home: UpgradeAlert(
         showReleaseNotes: false,
+        minAppVersion: '1.0.3',
         child: HomePage()
         ),
     ),
